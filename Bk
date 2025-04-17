@@ -1,0 +1,68 @@
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+void main() {
+  runApp(SomaliBooksApp());
+}
+
+class SomaliBooksApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Somali Books',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        useMaterial3: true,
+      ),
+      home: BooksHomePage(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class BooksHomePage extends StatelessWidget {
+  final List<Map<String, String>> books = [
+    {
+      'title': 'SAHAY',
+      'author': 'Islaam Jamaal',
+      'url': 'https://example.com/sahay.pdf',
+    },
+    {
+      'title': 'Taariikhda Soomaaliya',
+      'author': 'Puntland Team',
+      'url': 'https://example.com/taariikhda.pdf',
+    },
+  ];
+
+  void openBook(String url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      throw 'PDF-ka laguma furi karo: $url';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Somali Books'),
+      ),
+      body: ListView.builder(
+        itemCount: books.length,
+        itemBuilder: (context, index) {
+          final book = books[index];
+          return Card(
+            margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            child: ListTile(
+              title: Text(book['title']!),
+              subtitle: Text('Qore: ${book['author']}'),
+              trailing: Icon(Icons.arrow_forward),
+              onTap: () => openBook(book['url']!),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
